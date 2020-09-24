@@ -10,14 +10,22 @@ let notes = [
 ];
 
 const typeDefs = gql`
+type Note {
+  id: ID!
+  content: String!
+  author: String!
+}
+
 type Query {
-  hello: String
+  hello: String!
+  notes:[Note]!
 }
 `;
 
 const resolvers = {
   Query: {
     hello: () => `Hello World`,
+    notes: () => notes
   }
 }
 // Apollo Server setup
