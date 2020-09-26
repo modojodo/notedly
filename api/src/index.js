@@ -19,23 +19,25 @@ type Note {
 type Query {
   hello: String!
   notes:[Note]!
+  note(id: ID!): Note!
 }
 `;
 
 const resolvers = {
   Query: {
     hello: () => `Hello World`,
-    notes: () => notes
+    notes: () => notes,
+    note: (parent, args) => notes.find(note => note.id === args.id),
   }
 }
 // Apollo Server setup
-const server = new ApolloServer({ typeDefs, resolvers });
+  const server = new ApolloServer({ typeDefs, resolvers });
 
 // Apply the Apollo GraphQL middleware and set the path to /api
-server.applyMiddleware({ app, path: '/api' });
+  server.applyMiddleware({ app, path: '/api' });
 
-app.listen({ port }, () =>
-  console.log(
-    `GraphQL Server running at http://localhost:${port}${server.graphqlPath}`
-  )
-);
+  app.listen({ port }, () =>
+    console.log(
+      `GraphQL Server running at http://localhost:${port}${server.graphqlPath}`
+    )
+  );
