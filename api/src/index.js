@@ -3,6 +3,7 @@ const app = express();
 const { ApolloServer, gql } = require('apollo-server-express');
 
 const port = process.env.PORT || 4000;
+
 let notes = [
   { id: '1', content: 'This is a note', author: 'Adam Scott' },
   { id: '2', content: 'This is another note', author: 'Harlow Everly' },
@@ -10,17 +11,21 @@ let notes = [
 ];
 
 const typeDefs = gql`
-type Note {
-  id: ID!
-  content: String!
-  author: String!
-}
+    type Note {
+        id: ID!
+        content: String!
+        author: String!
+    }
 
-type Query {
-  hello: String!
-  notes:[Note]!
-  note(id: ID!): Note!
-}
+    type Query {
+        hello: String!
+        notes:[Note]!
+        note(id: ID!): Note!
+    }
+
+    type Mutation {
+        newNote(content: String): Note!
+    }
 `;
 
 const resolvers = {
@@ -28,16 +33,25 @@ const resolvers = {
     hello: () => `Hello World`,
     notes: () => notes,
     note: (parent, args) => notes.find(note => note.id === args.id),
+    newNote: (parent, args) => {
+      const newNoteValue = {
+        id: String(notes.length + 1),
+        content: args.content,
+        author: 'Umer Hassan',
+      }
+      notes.push(newNoteValue);
+      return newNoteValue;
+    }
   }
 }
 // Apollo Server setup
-  const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ typeDefs, resolvers });
 
 // Apply the Apollo GraphQL middleware and set the path to /api
-  server.applyMiddleware({ app, path: '/api' });
+server.applyMiddleware({ app, path: '/api' });
 
-  app.listen({ port }, () =>
-    console.log(
-      `GraphQL Server running at http://localhost:${port}${server.graphqlPath}`
-    )
-  );
+app.listen({ port }, () =>
+  console.log(
+    `GraphQL Server running at http://localhost:${port}${server.graphqlPath}`
+  )
+);
