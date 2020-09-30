@@ -33,6 +33,8 @@ const resolvers = {
     hello: () => `Hello World`,
     notes: () => notes,
     note: (parent, args) => notes.find(note => note.id === args.id),
+  },
+  Mutation: {
     newNote: (parent, args) => {
       const newNoteValue = {
         id: String(notes.length + 1),
